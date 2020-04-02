@@ -34,12 +34,23 @@ from subprocess import call
 import git.repo.base as grb
 from github import Github, BadCredentialsException, GithubException
 
-REPOS = ["chaoss/grimoirelab-sirmordred", "chaoss/grimoirelab-elk", "chaoss/grimoirelab-kingarthur",
-         "chaoss/grimoirelab-graal", "chaoss/grimoirelab-perceval", "chaoss/grimoirelab-perceval-mozilla",
-         "chaoss/grimoirelab-perceval-opnfv", "chaoss/grimoirelab-perceval-puppet",
-         "Bitergia/grimoirelab-perceval-finos", "chaoss/grimoirelab-sortinghat", "chaoss/grimoirelab-sigils",
-         "chaoss/grimoirelab-kidash", "chaoss/grimoirelab-toolkit", "chaoss/grimoirelab-cereslib",
-         "chaoss/grimoirelab-manuscripts"]
+REPOS = [
+    "chaoss/grimoirelab-sirmordred",
+    "chaoss/grimoirelab-elk",
+    "chaoss/grimoirelab-kingarthur",
+    "chaoss/grimoirelab-graal",
+    "chaoss/grimoirelab-perceval",
+    "chaoss/grimoirelab-perceval-mozilla",
+    "chaoss/grimoirelab-perceval-opnfv",
+    "chaoss/grimoirelab-perceval-puppet",
+    "Bitergia/grimoirelab-perceval-finos",
+    "chaoss/grimoirelab-sortinghat",
+    "chaoss/grimoirelab-sigils",
+    "chaoss/grimoirelab-kidash",
+    "chaoss/grimoirelab-toolkit",
+    "chaoss/grimoirelab-cereslib",
+    "chaoss/grimoirelab-manuscripts"
+]
 
 GITHUB_URL = "https://github.com/"
 
@@ -58,7 +69,6 @@ def configure_logging(debug):
     This function sets basic attributes for logging.
     :param debug: set the debug mode
     """
-
     if not debug:
         logging.basicConfig(level=logging.INFO,
                             format=LOG_FORMAT)
@@ -71,7 +81,6 @@ def parse_args():
     """
     Setup command line argument parsing with argparse.
     """
-
     parser = argparse.ArgumentParser(
         description="Analyze script argument parser",
         formatter_class=RawTextHelpFormatter
@@ -108,7 +117,6 @@ def check_token(token):
     :param token: github personal access token
     :returns g: GitHub auth object
     """
-
     logging.info("checking the access token")
 
     g = Github(token)
@@ -130,7 +138,6 @@ def move_into_folder(folder):
     This function changes the working directory.
     :param folder: required folder name
     """
-
     req_path = os.path.join(os.getcwd(), folder)
     if os.path.isdir(req_path):
         logging.info("moving into " + req_path)
@@ -146,7 +153,6 @@ def fork(user, repo):
     :param user: user
     :param repo: repository
     """
-
     try:
         logging.info("forking the repository " + repo.name + " to " + user.login)
         user.create_fork(repo)
@@ -163,7 +169,6 @@ def clone_upstream(user, org, repo):
     :param org: organization
     :param repo: repository
     """
-
     try:
         logging.info("cloning the forked repository " + repo.name)
         local_repo = grb.Repo.clone_from(GITHUB_URL + user.login + "/" + repo.name + ".git",
@@ -180,7 +185,6 @@ def check_remote():
     """
     Check the remote of the repository.
     """
-
     logging.info("checking remotes")
     call(CHECK_REMOTES_CMD)
 
@@ -191,7 +195,6 @@ def sync():
     This function fetched the upstream remote and
     updates the master branch of the repository.
     """
-
     try:
         logging.info("fetching upstream")
         call(FETCH_UPSTREAM_CMD)
@@ -212,7 +215,6 @@ def update(source):
 
     :param source: dev env folder
     """
-
     logging.info("updating the forks")
     curr_path = os.getcwd()
     for item in REPOS:
@@ -232,7 +234,6 @@ def create(g, source):
     :param g: GitHub auth object
     :param source: dev env folder
     """
-
     logging.info("setting up the repositories")
     curr_path = os.getcwd()
     user = g.get_user()
@@ -268,7 +269,6 @@ def main():
     with the latest changes using the GitHub API token xxxx:
         $ python3 glab-dev-setup.py --update --token xxxx --source sources
     """
-
     args = parse_args()
 
     token = str(args.token)
