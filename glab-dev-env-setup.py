@@ -32,7 +32,7 @@ from argparse import RawTextHelpFormatter
 from subprocess import call
 
 import git.repo.base as grb
-from github import Github, BadCredentialsException
+from github import Github, BadCredentialsException, GithubException
 
 REPOS = ["chaoss/grimoirelab-sirmordred", "chaoss/grimoirelab-elk", "chaoss/grimoirelab-kingarthur",
          "chaoss/grimoirelab-graal", "chaoss/grimoirelab-perceval", "chaoss/grimoirelab-perceval-mozilla",
@@ -147,8 +147,13 @@ def fork(user, repo):
     :param repo: repository
     """
 
-    logging.info("forking the repository " + repo.name + " to " + user.login)
-    user.create_fork(repo)
+    try:
+        logging.info("forking the repository " + repo.name + " to " + user.login)
+        user.create_fork(repo)
+    except GithubException as e:
+        logging.error("forking aborted.")
+        logging.error("please select the appropriate scope (`repo`) for the token: " + str(e))
+        exit()
 
 
 def clone_upstream(user, org, repo):
