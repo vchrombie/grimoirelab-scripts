@@ -82,7 +82,7 @@ def parse_args():
     Setup command line argument parsing with argparse.
     """
     parser = argparse.ArgumentParser(
-        description="Analyze script argument parser",
+        description="glab-dev-env-setup script argument parser",
         formatter_class=RawTextHelpFormatter
     )
 
