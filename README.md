@@ -28,6 +28,8 @@ $ python3 generate-es-index-schema.py git-enriched -m dump -f git.csv
 $ python3 generate-es-index-schema.py --help
 ```
 
+The initial work was done by animeshk08, [create_schema.py](https://gist.github.com/animeshk08/0a8dafa66826137032efb6c771074d1d).
+
 ## setup
 
 ### [glab-dev-env-setup](glab-dev-env-setup.py)
