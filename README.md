@@ -79,3 +79,22 @@ python3 glab-dev-env-setup.py --help
 If you have any suggestion/improvements, please raise an issue or submit a PR to the script.
 
 Reference: https://gist.github.com/vchrombie/4403193198cd79e7ee0079259311f6e8
+
+
+### [generate-es-index-schema](generate-es-index-schema.py)
+
+
+#### Usage
+
+You can use the script from the command line
+```
+$ python3 generate-es-index-schema.py index_name -m client
+```
+
+#### Examples:
+
+* Create a schema file `git.csv` of the index `git-enriched` using the dump menthod:
+```
+$ curl -XGET -k "https://admin:admin@localhost:9200/git-enriched/" > mapping
+$ python3 generate-es-index-schema.py git-enriched -m dump -f git.csv
+```
