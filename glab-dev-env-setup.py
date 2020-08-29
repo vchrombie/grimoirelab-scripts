@@ -255,7 +255,7 @@ def main():
 
 
     The script can be run via the command line:
-        $ python3 glab-dev-setup.py -c -t xxxx
+        $ python3 glab-dev-env-setup.py -c -t xxxx
 
     Examples:
     --------
@@ -263,11 +263,11 @@ def main():
     * Create a folder `sources` with all the 15 GrimoireLab
     components forked, cloned and setting their upstream link
     using the GitHub API token xxxx:
-        $ python3 glab-dev-setup.py --create --token xxxx --source sources
+        $ python3 glab-dev-env-setup.py --create --token xxxx --source sources
 
     * Update the existing forks present in the `sources` folder
     with the latest changes using the GitHub API token xxxx:
-        $ python3 glab-dev-setup.py --update --token xxxx --source sources
+        $ python3 glab-dev-env-setup.py --update --token xxxx --source sources
     """
     args = parse_args()
 
