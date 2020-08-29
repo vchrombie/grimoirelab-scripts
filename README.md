@@ -10,23 +10,10 @@ automation scripts for maintaining GrimoireLab.
 
 You can use the script from the command line
 ```
-$ python3 generate-es-index-schema.py index_name -m client
+$ python3 generate-es-index-schema.py index_name
 ```
 
-Replace `index_name` with the required index name and check if you have varied credentials for connecting to Elasticsearch if you are using the client method.
-
-#### Examples:
-
-* Create a schema file `git.csv` of the index `git-enriched` using the dump menthod:
-```
-$ curl -XGET -k "https://admin:admin@localhost:9200/git-enriched/" > mapping
-$ python3 generate-es-index-schema.py git-enriched -m dump -f git.csv
-```
-
-* You can use `--help`, if you need more details.
-```
-$ python3 generate-es-index-schema.py --help
-```
+Replace `index_name` with the required index name and check if you have varied credentials for connecting to Elasticsearch.
 
 The initial work was done by animeshk08, [create_schema.py](https://gist.github.com/animeshk08/0a8dafa66826137032efb6c771074d1d).
 
