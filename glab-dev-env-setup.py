@@ -283,7 +283,7 @@ def main():
     elif args.update:
         update(source)
     else:
-        logging.info("select any method, --create or --update")
+        logging.error("select any method, --create or --update")
 
     return
 
