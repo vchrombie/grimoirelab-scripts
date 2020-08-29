@@ -24,13 +24,14 @@
 import logging
 import json
 import warnings
+import sys
 
 import pandas as pd
 
 import argparse
 from argparse import RawTextHelpFormatter
 
-from elasticsearch import Elasticsearch, RequestsHttpConnection
+from elasticsearch import Elasticsearch, RequestsHttpConnection, ConnectionError
 
 LOG_FORMAT = "[%(asctime)s] - %(message)s"
 DEBUG_LOG_FORMAT = "[%(asctime)s - %(name)s - %(levelname)s] - %(message)s"
@@ -64,10 +65,6 @@ def parse_args():
 
     parser.add_argument('index_name', help="es index name")
 
-    parser.add_argument("-m", "--method",
-                        required=True,
-                        help="method of fetching index data (cleint \n\n")
-
     parser.add_argument("-f", "--file",
                         default="schema.csv",
                         help="schema file\n\n")
@@ -79,12 +76,10 @@ def parse_args():
     return parser.parse_args()
 
 
-def get_mapping(index_name, method):
-    if method == "dump":
-        logging.debug("opening the file dump")
-        with open('mapping') as file:
-            mapping = json.load(file)
-    elif method == "client":
+def get_mapping(index_name):
+    mapping_items = None
+
+    try:
         # es = Elasticsearch()
         logging.debug("connecting to elasticsearch using client")
         es = Elasticsearch("https://admin:admin@localhost:9200",
@@ -92,15 +87,14 @@ def get_mapping(index_name, method):
                            connection_class=RequestsHttpConnection)
 
         mapping = es.indices.get_mapping(index_name)
-    else:
-        log.error("method incorrect (should be either `dump` or `client`")
-        sys.exit(0)
+        mapping_items = mapping[index_name]['mappings']['items']
+    except ConnectionError:
+        logging.error("there is some problem connecting to es")
 
-    return mapping[index_name]['mappings']['items']
+    return mapping_items
 
 
 def generate_schema(items, prefix):
-
     fields = items['properties']
     names = list(fields.keys())
 
@@ -120,7 +114,7 @@ def create_schema_file(source_file):
     # convert the dictionary to a dataframe and sort base on 'name'
     df = pd.DataFrame(columns=HEAD_COLUMN, data=list(DICT_INDEX_FIELDS.values()))
     df.sort_values('name')
- 
+
     # convert the dataframe to a csv
     df.to_csv(source_file, sep=',', index=False)
 
@@ -130,35 +124,33 @@ def main():
     A script for generating schema template of an index.
 
     The script can be run via the command line:
-        $ python3 generate-es-index-schema.py index_name -m client
-
-    Examples:
-    --------
-
-    * Create a schema file `git.csv` of the index `git-enriched` using the dump menthod:
-            $ curl -XGET -k "https://admin:admin@localhost:9200/git-enriched/" > mapping
-            $ python3 generate-es-index-schema.py git-enriched -m dump -f git.csv
+        $ python3 generate-es-index-schema.py index_name
     """
 
     args = parse_args()
 
     index_name = str(args.index_name)
     source_file = str(args.file) if args.file else "schema.csv"
-    method = str(args.method)
 
     configure_logging(args.debug)
     logging.info("start")
 
     logging.info("fetching mapping for " + index_name)
-    mapping_items = get_mapping(index_name, method)
+    mapping_items = get_mapping(index_name)
     logging.info("mapping fetched")
+
+    if mapping_items and mapping_items is not None:
+        pass
+    else:
+        logging.error("mapping items is empty, please check the es connection")
+        sys.exit(0)
 
     logging.info("generating schema for " + index_name)
     generate_schema(mapping_items, '')
     logging.info("schema generated")
 
     logging.info("generating schema file, " + source_file)
-    create_schema_file(source_file)  
+    create_schema_file(source_file)
     logging.info("schema file generated")
 
 
