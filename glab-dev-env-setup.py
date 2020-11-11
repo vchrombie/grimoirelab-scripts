@@ -43,6 +43,7 @@ REPOS = [
     "chaoss/grimoirelab-perceval-mozilla",
     "chaoss/grimoirelab-perceval-opnfv",
     "chaoss/grimoirelab-perceval-puppet",
+    "chaoss/grimoirelab-perceval-weblate",
     "Bitergia/grimoirelab-perceval-finos",
     "chaoss/grimoirelab-sortinghat",
     "chaoss/grimoirelab-sigils",
